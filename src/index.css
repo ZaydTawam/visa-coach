@@ -1,0 +1,251 @@
+@font-face {
+  font-family: 'Helvetica Now';
+  src: url(assets/fonts/HelveticaNowDisplay-ExtLt.woff2) format('woff2'),
+    url(assets/fonts/HelveticaNowDisplay-ExtLt.woff) format('woff');
+}
+@font-face {
+  font-family: 'Helvetica Now Light';
+  src: url(assets/fonts/HelveticaNowDisplay-Light.woff2) format('woff2'),
+    url(assets/fonts/HelveticaNowDisplay-Light.woff) format('woff');
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: 'Helvetica Now', sans-serif;
+  font-weight: normal;
+  color: #ffffff;
+  box-sizing: border-box;
+}
+
+:root {
+  font-size: 62.5%;
+  line-height: 1.5;
+  font-weight: normal;
+
+  color: #ffffff;
+  background-color: #18181b;
+
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-image: url('./assets/images/background.png');
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+body {
+  margin: 50px 199px 0 199px;
+  height: 100vh;
+}
+
+h1 {
+  margin: 0;
+  font-size: 6.5rem;
+  line-height: 1.1;
+}
+
+h2 {
+  margin: 0;
+  font-size: 36pt;
+  line-height: 1.1;
+}
+
+h3 {
+  margin: 0;
+  font-size: 3rem;
+}
+
+p {
+  margin: 0;
+  font-size: 1.5rem;
+  letter-spacing: 0.4px;
+}
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+nav a {
+  display: flex;
+  text-decoration: none;
+  color: #fff;
+}
+
+.info-card {
+  padding: 3.5rem 47px;
+  background: linear-gradient(117.04deg, #ffffff26, #ffffff0d);
+  backdrop-filter: blur(15px);
+  border-radius: 11px;
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+  max-width: 991px;
+}
+
+.form select:invalid {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.form select:valid {
+  color: #fff;
+}
+
+.name-fields {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 1fr 1fr;
+}
+
+/* 1. Make placeholder text 60% white */
+::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* For cross-browser support, also include vendor-prefixed versions: */
+::-webkit-input-placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+:-ms-input-placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+:-moz-placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+::-moz-placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.form input,
+.form select {
+  width: 100%;
+  font-size: 1.5rem;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(15px);
+  padding: 1.5rem;
+  border-style: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  background-color: #ffffff1a;
+  color: #ffffff;
+  border-radius: 8px;
+  outline: none;
+}
+
+.select-container {
+  position: relative;
+}
+
+.select {
+  cursor: pointer;
+  width: 100%;
+  font-size: 1.5rem;
+  line-height: normal;
+  letter-spacing: 0.3px;
+  backdrop-filter: blur(15px);
+  padding: 1.5rem;
+  border-style: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  background-color: #ffffff1a;
+  border-radius: 8px;
+}
+
+.select-content {
+  position: absolute;
+  cursor: pointer;
+  font-size: 1.5rem;
+  letter-spacing: 0.3px;
+  width: 100%;
+  margin-top: 0.5rem;
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.5rem;
+  z-index: 2;
+  max-height: 25rem;
+  overflow-y: auto;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.select-item {
+  padding: 0.75rem 1rem;
+  color: white;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.select-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.select-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.select-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.select-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.select-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.error-message {
+  color: #ff4d4d;
+  margin-top: 0.5rem;
+}
+
+button {
+  font-family: 'Helvetica Now Light';
+  font-size: 1.5rem;
+  letter-spacing: 0.3px;
+  padding: 1.5rem 2rem;
+  letter-spacing: 0.4px;
+  background-color: #fff;
+  color: #000;
+  border: none;
+  border-radius: 3rem;
+  cursor: pointer;
+}
