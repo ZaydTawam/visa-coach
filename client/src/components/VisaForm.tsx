@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { countryData } from '../data/countries';
 import { universityData } from '../data/universities';
 import { CaretUpDown } from '@phosphor-icons/react';
+import { Link } from 'react-router-dom';
 
 const countries = Object.keys(countryData);
 
@@ -114,10 +115,31 @@ const VisaForm = ({ setUserInfo }: Props) => {
   };
 
   return (
-    <div className="form-container">
-      <h2 style={{ marginBottom: '57px' }}>
-        Let’s Prepare You for Your Visa Interview!
-      </h2>
+    <div
+      className="info-card"
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        width: 'fit-content',
+        margin: '0 auto',
+      }}
+    >
+      <div
+        style={{
+          marginBottom: '8rem',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 0,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <h3>Welcome to VisaCoach</h3>
+        <p style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
+          Begin by creating an account
+        </p>
+      </div>
       {/* In the future limit form to just email and password and navigate to another page for rest of info */}
 
       <form onSubmit={handleSubmit} className="form">
@@ -246,7 +268,16 @@ const VisaForm = ({ setUserInfo }: Props) => {
 
         <button type="submit">Continue</button>
       </form>
-      {/* Already have an account, log in */}
+      <Link
+        to="/login"
+        style={{
+          fontSize: '1.5rem',
+          letterSpacing: '0.4px',
+          marginTop: '2rem',
+        }}
+      >
+        Already have an account? Log in
+      </Link>
     </div>
   );
 };

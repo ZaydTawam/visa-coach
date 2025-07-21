@@ -1,16 +1,20 @@
 import { Link } from 'react-router-dom';
 import logo from '../assets/visacoach.svg';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const Navbar = () => {
-  useEffect(() => {
-    fetch('http://localhost:3000/')
-      .then((res) => res.json())
-      .then((data) => console.log(data))
-      .catch((err) => console.error(err));
-  });
+  const [loggedIn, setLoggedIn] = useState(false);
 
-  // get auth and make sure account creation is complete and change log in button to accound and add interview button accordingly
+  useEffect(() => {
+    fetch('http://localhost:3000/api/auth/status', {
+      method: 'GET',
+      credentials: 'include',
+    }).then((response) => {
+      if (response.ok) {
+        setLoggedIn(true);
+      }
+    });
+  }, []);
 
   return (
     <nav>
@@ -49,8 +53,33 @@ const Navbar = () => {
             Mission
           </p>
         </Link>
+        {loggedIn && (
+          <Link
+            to="/"
+            className="mouseButton"
+            style={{
+              width: '119px',
+              background: 'linear-gradient(117.04deg, #ffffff26, #ffffff0d)',
+              backdropFilter: 'blur(15px)',
+              borderRadius: '25px',
+              display: 'flex',
+              justifyContent: 'center',
+              padding: '8px 0',
+              borderTop: '1px solid rgba(255, 255, 255, 0.4)',
+              borderLeft: '1px solid rgba(255, 255, 255, 0.3)',
+            }}
+          >
+            <p
+              style={{
+                fontSize: '18px',
+              }}
+            >
+              Interview
+            </p>
+          </Link>
+        )}
         <Link
-          to="/"
+          to={loggedIn ? '/' : '/login'}
           className="mouseButton"
           style={{
             width: '119px',
@@ -70,7 +99,7 @@ const Navbar = () => {
               color: '#000000',
             }}
           >
-            Log In
+            {loggedIn ? 'Account' : 'Log In'}
           </p>
         </Link>
       </div>

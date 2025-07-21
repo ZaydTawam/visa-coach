@@ -7,6 +7,7 @@ import Mission from './pages/Mission';
 import Welcome from './pages/Welcome';
 import Interview from './pages/Interview';
 import Analysis from './pages/Analysis';
+import Login from './pages/Login';
 
 function App() {
   const [userInfo, setUserInfo] = useState({
@@ -23,6 +24,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home setUserInfo={setUserInfo} />} />
           <Route path="/mission" element={<Mission />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/welcome" element={<Welcome userInfo={userInfo} />} />
           <Route path="/interview" element={<Interview />} />
           <Route path="/analysis" element={<Analysis />} />
