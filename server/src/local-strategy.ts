@@ -21,13 +21,10 @@ passport.deserializeUser(async (id, done) => {
 export default passport.use(
   new Strategy({ usernameField: 'email' }, async (email, password, done) => {
     try {
-      console.log(email, password)
       const user = await User.findOne({ email });
       if (!user) throw new Error('User not found');
-      console.log(user.password)
-      if (password !== user.password)
+      if (!comparePassword(password, user.password))
         throw new Error('Invalid password');
-      console.log('here')
       done(null, user);
     } catch (err) {
       done(err);

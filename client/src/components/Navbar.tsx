@@ -31,16 +31,16 @@ const Navbar = () => {
       </Link>
       <div style={{ display: 'flex', gap: '2.5rem' }}>
         <Link
-          to="/mission"
+          to={loggedIn ? '/dashboard' : '/signup'}
           className="mouseButton"
           style={{
-            width: '119px',
+            width: 'auto',
             background: 'linear-gradient(117.04deg, #ffffff26, #ffffff0d)',
             backdropFilter: 'blur(15px)',
             borderRadius: '25px',
             display: 'flex',
             justifyContent: 'center',
-            padding: '8px 0',
+            padding: '8px 24px',
             borderTop: '1px solid rgba(255, 255, 255, 0.4)',
             borderLeft: '1px solid rgba(255, 255, 255, 0.3)',
           }}
@@ -50,45 +50,21 @@ const Navbar = () => {
               fontSize: '18px',
             }}
           >
-            Mission
+            {loggedIn ? 'Dashboard' : 'Sign Up'}
           </p>
         </Link>
-        {loggedIn && (
-          <Link
-            to="/"
-            className="mouseButton"
-            style={{
-              width: '119px',
-              background: 'linear-gradient(117.04deg, #ffffff26, #ffffff0d)',
-              backdropFilter: 'blur(15px)',
-              borderRadius: '25px',
-              display: 'flex',
-              justifyContent: 'center',
-              padding: '8px 0',
-              borderTop: '1px solid rgba(255, 255, 255, 0.4)',
-              borderLeft: '1px solid rgba(255, 255, 255, 0.3)',
-            }}
-          >
-            <p
-              style={{
-                fontSize: '18px',
-              }}
-            >
-              Interview
-            </p>
-          </Link>
-        )}
+
         <Link
-          to={loggedIn ? '/' : '/login'}
-          className="mouseButton"
+          to={loggedIn ? '/account' : '/login'}
+          className="mouse-button1"
           style={{
-            width: '119px',
+            width: 'auto',
             background: '#ffffff',
             backdropFilter: 'blur(15px)',
             borderRadius: '25px',
             display: 'flex',
             justifyContent: 'center',
-            padding: '8px 0',
+            padding: '8px 24px',
             borderTop: '1px solid rgba(255, 255, 255, 0.4)',
             borderLeft: '1px solid rgba(255, 255, 255, 0.3)',
           }}

@@ -1,55 +1,49 @@
-import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { questions } from '../data/questions';
 
 const Interview = () => {
   const navigate = useNavigate();
-  const [questionNumber, setQuestionNumber] = useState(1);
+  const location = useLocation();
+  const id = location.state.id || '';
+  const savedQuestionNumber = location.state.questionNumber || 1;
+  const [questionNumber, setQuestionNumber] = useState(savedQuestionNumber);
   const [question, setQuestion] = useState(
     questions[0][Math.floor(Math.random() * questions[0].length)]
   );
+  const [answer, setAnswer] = useState('');
   const [recording, setRecording] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    const startWebcam = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-        });
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-        }
-      } catch (err) {
-        console.error('Error accessing webcam:', err);
-      }
-    };
-
-    startWebcam();
-
-    // Cleanup function to stop the webcam when component unmounts
-    return () => {
-      if (videoRef.current?.srcObject) {
-        const stream = videoRef.current.srcObject as MediaStream;
-        stream.getTracks().forEach((track) => track.stop());
-      }
-    };
-  }, []);
 
   const handleClick = () => {
-    if (questionNumber < 5) {
-      setQuestion(
-        questions[questionNumber][
-          Math.floor(Math.random() * questions[questionNumber].length)
-        ]
-      );
-      setQuestionNumber(questionNumber + 1);
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth',
+    if (answer) {
+      fetch(`http://localhost:3000/api/interview/${id}/answer`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ question: question, answer: answer }),
+      }).then((response) => {
+        if (response.ok) {
+          setAnswer('');
+          if (questionNumber < 5) {
+            setQuestion(
+              questions[questionNumber][
+                Math.floor(Math.random() * questions[questionNumber].length)
+              ]
+            );
+            setQuestionNumber(questionNumber + 1);
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth',
+            });
+          } else {
+            navigate('/analysis');
+          }
+        } else {
+          console.log('err');
+        }
       });
-    } else if (questionNumber >= 5) {
-      navigate('/analysis');
     }
   };
 
@@ -60,11 +54,15 @@ const Interview = () => {
       </p>
       <h2 style={{ marginBottom: '3rem' }}>{question}</h2>
       <div className="info-card" style={{ width: '100%', aspectRatio: 16 / 9 }}>
-        <video
-          ref={videoRef}
-          autoPlay
-          playsInline
-          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        <input
+          type="text"
+          name="answer"
+          id="answer"
+          placeholder="Answer"
+          value={answer}
+          onChange={(e) => {
+            setAnswer(e.target.value);
+          }}
         />
       </div>
       <div
@@ -77,8 +75,13 @@ const Interview = () => {
         <button onClick={() => setRecording(!recording)}>
           {!recording ? 'Start' : 'Stop'} Recording
         </button>
-        <button onClick={handleClick}>
-          {(questionNumber < 5 && 'Next Question') || 'Finish Interview'}
+        <button
+          style={{
+            opacity: answer ? 1 : 0.5,
+          }}
+          onClick={handleClick}
+        >
+          Submit Response
         </button>
       </div>
     </>

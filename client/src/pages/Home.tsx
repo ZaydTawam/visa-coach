@@ -1,19 +1,23 @@
 import VisaForm from '../components/VisaForm';
 import PageIntro from '../components/PageIntro';
 import { Quotes } from '@phosphor-icons/react';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
-interface Props {
-  setUserInfo: React.Dispatch<
-    React.SetStateAction<{
-      firstName: string;
-      lastName: string;
-      country: string;
-      university: string;
-    }>
-  >;
-}
+const Home = () => {
+  const [loggedIn, setLoggedIn] = useState(false);
 
-const Home = ({ setUserInfo }: Props) => {
+  useEffect(() => {
+    fetch('http://localhost:3000/api/auth/status', {
+      method: 'GET',
+      credentials: 'include',
+    }).then((response) => {
+      if (response.ok) {
+        setLoggedIn(true);
+      }
+    });
+  }, []);
+
   return (
     <>
       <PageIntro heading="Ace Your F1 Visa Interview with AI-Powered Preparation">
@@ -53,7 +57,7 @@ const Home = ({ setUserInfo }: Props) => {
           </p>
         </div>
       </div>
-      <div className="info-card" style={{ marginBottom: '229px' }}>
+      <div className="info-card" style={{ marginBottom: '8rem' }}>
         <Quotes size={'3rem'} weight="fill" style={{ marginBottom: '3rem' }} />
         <h3 style={{ lineHeight: 1.3, marginBottom: '1rem' }}>
           "As a student from Nigeria, I was worried about the high visa
@@ -63,7 +67,22 @@ const Home = ({ setUserInfo }: Props) => {
         <p style={{ marginBottom: '1rem' }}>Oluwaseun Adebayo</p>
         <p style={{ color: '#FFFFFF99' }}>Nigeria • MIT</p>
       </div>
-      <VisaForm setUserInfo={setUserInfo} />
+      <h2 style={{ textAlign: 'center' }}>
+        Read more about our{' '}
+        <Link
+          to="/mission"
+          style={{ textDecorationThickness: '2px', textUnderlineOffset: '4px' }}
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        >
+          mission
+        </Link>
+      </h2>
+
+      {!loggedIn && (
+        <div style={{ marginTop: '20rem' }}>
+          <VisaForm />
+        </div>
+      )}
     </>
   );
 };

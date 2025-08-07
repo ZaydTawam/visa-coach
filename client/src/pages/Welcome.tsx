@@ -2,28 +2,17 @@ import { useNavigate } from 'react-router-dom';
 import { countryData } from '../data/countries';
 import { universityData } from '../data/universities';
 
-interface Props {
-  userInfo: {
-    firstName: string;
-    lastName: string;
-    country: string;
-    university: string;
-  };
-}
-
-const Welcome = ({ userInfo }: Props) => {
+const Welcome = () => {
   const navigate = useNavigate();
 
-  const university = userInfo.university;
-  const country = userInfo.country;
+  const university = 'userInfo.university';
+  const country = 'userInfo.country';
   const ranking = universityData[university].ranking;
   const acceptanceRate = universityData[university].acceptanceRate;
   const rejectionRate = countryData[country];
   return (
     <>
-      <h1 style={{ marginTop: '39rem', marginBottom: '6rem' }}>
-        {`Welcome, ${userInfo.firstName}!`}
-      </h1>
+      <h1 style={{ marginTop: '39rem', marginBottom: '6rem' }}>{`Welcome!`}</h1>
       <p>
         F1 Visa Rejection Rate for {country}
         <span style={{ float: 'right' }}>{rejectionRate}%</span>

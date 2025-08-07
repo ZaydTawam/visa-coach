@@ -84,6 +84,9 @@ nav a {
   color: #fff;
 }
 
+.mouse-button1:hover {
+  background-color: #c2c2c2;
+}
 .info-card {
   padding: 3.5rem 47px;
   background: linear-gradient(117.04deg, #ffffff12, #ffffff0d);
@@ -138,6 +141,21 @@ nav a {
 }
 ::-moz-placeholder {
   color: rgba(255, 255, 255, 0.6);
+}
+
+input {
+  width: 100%;
+  font-size: 1.5rem;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(15px);
+  padding: 1.5rem 2.5rem;
+  border-style: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  background-color: #ffffff1a;
+  color: #ffffff;
+  border-radius: 30px;
+  outline: none;
 }
 
 .form input,
@@ -250,4 +268,27 @@ button {
   border: none;
   border-radius: 3rem;
   cursor: pointer;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px transparent inset !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background-color: #ffffff1a !important;
+  backdrop-filter: blur(15px) !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+input:-moz-autofill {
+  background-color: #ffffff1a !important;
+  color: #ffffff !important;
+  backdrop-filter: blur(15px) !important;
+}
+
+input:autofill {
+  background-color: #ffffff1a !important;
+  color: #ffffff !important;
+  backdrop-filter: blur(15px) !important;
 }

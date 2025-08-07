@@ -1,5 +1,4 @@
 import './index.css';
-import { useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
@@ -8,24 +7,23 @@ import Welcome from './pages/Welcome';
 import Interview from './pages/Interview';
 import Analysis from './pages/Analysis';
 import Login from './pages/Login';
+import Signup from './pages/Signup';
+import Dashboard from './pages/Dashboard';
+import Account from './pages/Account';
 
 function App() {
-  const [userInfo, setUserInfo] = useState({
-    firstName: '',
-    lastName: '',
-    country: '',
-    university: '',
-  });
-
   return (
     <div className="page-container">
       <div style={{ flex: 1 }}>
         <Navbar />
         <Routes>
-          <Route path="/" element={<Home setUserInfo={setUserInfo} />} />
+          <Route path="/" element={<Home />} />
           <Route path="/mission" element={<Mission />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/welcome" element={<Welcome userInfo={userInfo} />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/account" element={<Account />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/welcome" element={<Welcome />} />
           <Route path="/interview" element={<Interview />} />
           <Route path="/analysis" element={<Analysis />} />
         </Routes>

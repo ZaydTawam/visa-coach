@@ -1,8 +1,4 @@
-export interface Questions {
-  [index: number]: string[];
-}
-
-export const questions: Questions = [
+export const questions = [
   ['Why do you want to study in the US?', 'Why can’t you continue your education in your home country?', 'What are you planning to study?', 'Have you been to the United States before?'],
   ['Why did you choose this university?','How many different universities did you apply to?'],
   ['Could you share your GRE, TOEFL, or IELTS scores with me?','How well can you speak English?'],

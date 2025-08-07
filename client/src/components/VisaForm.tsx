@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import validator from 'validator';
 import { countryData } from '../data/countries';
 import { universityData } from '../data/universities';
+import logo from '../assets/visacoach.svg';
 import { CaretUpDown } from '@phosphor-icons/react';
 import { Link } from 'react-router-dom';
 
@@ -9,28 +10,18 @@ const countries = Object.keys(countryData);
 
 const universityNames = Object.keys(universityData);
 
-interface Props {
-  setUserInfo: React.Dispatch<
-    React.SetStateAction<{
-      firstName: string;
-      lastName: string;
-      country: string;
-      university: string;
-    }>
-  >;
-}
-
-const VisaForm = ({ setUserInfo }: Props) => {
+const VisaForm = () => {
   const [formData, setFormData] = useState({
+    email: '',
+    password: '',
     firstName: '',
     lastName: '',
-    email: '',
     country: '',
     university: '',
-    password: '',
   });
-  const navigate = useNavigate();
   const [errors, setErrors] = useState({
+    email: '',
+    password: '',
     firstName: '',
     lastName: '',
     country: '',
@@ -69,13 +60,24 @@ const VisaForm = ({ setUserInfo }: Props) => {
 
   const validateForm = () => {
     const newErrors = {
+      email: !validator.isEmail(formData.email) ? 'Invalid email' : '',
+      password:
+        formData.password.length < 8
+          ? 'Password must be at least 8 characters long'
+          : formData.password.length > 64
+          ? 'Password must be no more than 64 characters'
+          : '',
       firstName:
-        formData.firstName.length < 2
-          ? 'First name must be at least 2 characters'
+        formData.firstName.length < 1
+          ? 'First name is required'
+          : formData.firstName.length > 50
+          ? 'First name is too long'
           : '',
       lastName:
-        formData.lastName.length < 2
-          ? 'Last name must be at least 2 characters'
+        formData.lastName.length < 1
+          ? 'Last name is required'
+          : formData.lastName.length > 50
+          ? 'Last name is too long'
           : '',
       country: !formData.country ? 'Please select your country' : '',
       university: !formData.university
@@ -83,34 +85,48 @@ const VisaForm = ({ setUserInfo }: Props) => {
         : '',
     };
     setErrors(newErrors);
-    return !Object.values(newErrors).some((error) => error);
+    return !(
+      newErrors.email ||
+      newErrors.password ||
+      newErrors.firstName ||
+      newErrors.lastName ||
+      newErrors.country ||
+      newErrors.university
+    );
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    fetch('http://localhost:3000/api/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => response.json())
-      .then((result) => {
-        console.log('Success:', result);
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
-
     if (validateForm()) {
-      setUserInfo({
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        country: formData.country,
-        university: formData.university,
-      });
-      navigate('/welcome');
+      fetch('http://localhost:3000/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+        .then((response) => response.json())
+        .then((result) => {
+          console.log('Success:', result);
+          fetch('http://localhost:3000/api/auth', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify(formData),
+          }).then((r) => {
+            if (r.ok) {
+              console.log(1);
+              window.location.href = '/';
+            } else {
+              console.log(2);
+            }
+          });
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
     }
   };
 
@@ -135,28 +151,44 @@ const VisaForm = ({ setUserInfo }: Props) => {
           justifyContent: 'center',
         }}
       >
-        <h3>Welcome to VisaCoach</h3>
+        <img
+          src={logo}
+          style={{
+            width: '6rem',
+            marginBottom: '2rem',
+          }}
+        />
+        <h3>Welcome to Visa Coach</h3>
         <p style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
           Begin by creating an account
         </p>
       </div>
-      {/* In the future limit form to just email and password and navigate to another page for rest of info */}
 
       <form onSubmit={handleSubmit} className="form">
-        <input
-          type="text"
-          id="email"
-          placeholder="Email"
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-        />
-        <input
-          type="password"
-          id="password"
-          placeholder="Password"
-          onChange={(e) =>
-            setFormData({ ...formData, password: e.target.value })
-          }
-        />
+        <div>
+          <input
+            type="text"
+            id="email"
+            placeholder="Email"
+            onChange={(e) =>
+              setFormData({ ...formData, email: e.target.value })
+            }
+          />
+          {errors.email && <p className="error-message">{errors.email}</p>}
+        </div>
+        <div>
+          <input
+            type="password"
+            id="password"
+            placeholder="Password"
+            onChange={(e) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
+          />
+          {errors.password && (
+            <p className="error-message">{errors.password}</p>
+          )}
+        </div>
         <div className="name-fields">
           <div>
             <input
@@ -268,16 +300,9 @@ const VisaForm = ({ setUserInfo }: Props) => {
 
         <button type="submit">Continue</button>
       </form>
-      <Link
-        to="/login"
-        style={{
-          fontSize: '1.5rem',
-          letterSpacing: '0.4px',
-          marginTop: '2rem',
-        }}
-      >
-        Already have an account? Log in
-      </Link>
+      <p style={{ marginTop: '2rem' }}>
+        Already have an account? <Link to="/login">Log in</Link>
+      </p>
     </div>
   );
 };
