@@ -4,7 +4,7 @@ export interface Interview {
   _id?: mongoose.Types.ObjectId;
   date: Date,
   status: 'in-progress' | 'completed';
-  responses: {question: string, answer: string}[],
+  responses: {question: string, answer: string, status: 'in-progress' | 'completed'}[],
   feedback: {
     strengths: string[],
     weaknesses: string[],
@@ -33,7 +33,14 @@ const interviewSchema = new Schema<Interview>({
     type: [
     {
       question: { type: String, required: true}, 
-      answer: { type: String, required: true},
+      answer: {
+        type: String,
+        default: '',
+        required: function (this: any) {
+          return this.status === 'completed';
+        }
+      },
+      status: { type: String, enum: ['in-progress', 'completed'], default: 'in-progress', required: true}
     }
     ], 
     required: true, 

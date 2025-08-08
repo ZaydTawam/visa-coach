@@ -144,8 +144,10 @@ const Dashboard = () => {
                     return response.json();
                   })
                   .then((data) => {
-                    const { id, questionNumber } = data;
-                    navigate('/interview', { state: { id, questionNumber } });
+                    const { questionNumber, id, question, answer } = data;
+                    navigate('/interview', {
+                      state: { id, questionNumber, question, answer },
+                    });
                   })
                   .catch((err) => {
                     console.error(err);

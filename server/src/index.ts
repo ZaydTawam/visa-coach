@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { request } from 'express';
 import cors from 'cors';
 import session from 'express-session';
 import passport from 'passport';
@@ -42,15 +42,15 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 
-app.post('/api/auth', passport.authenticate('local'), (request, response) => {
-  response.sendStatus(200);
-})
-
 app.get('/api/auth/status', (request, response) => {
   if (request.user) response.sendStatus(200);
   else response.sendStatus(401);
 })
 
+app.post('/api/auth/login', passport.authenticate('local'), (request, response) => {
+  response.sendStatus(200);
+})
+ 
 app.post('/api/auth/register', async (request, response) => {
   request.body.password = hashPassword(request.body.password);
   const newUser = new User(request.body);
@@ -144,11 +144,18 @@ app.get('/api/interview/:id/', async (request, response) => {
     response.sendStatus(404);
     return;
   }
-  console.log(interview.responses.length, interview.id)
-  response.status(200).send({questionNumber: interview.responses.length+1, id: interview.id });
+  if (interview.status === 'completed') {
+    response.send(400);
+    return;
+  }
+  const { responses, id } = interview
+  const questionNumber = responses.length;
+  const last = responses[questionNumber - 1];
+  const {question, answer} = last;
+  response.status(200).send({questionNumber, id, question, answer});
 })
 
-app.post('/api/interview/:id/answer', async (request, response) => {
+app.patch('/api/interview/:id/save', async (request, response) => {
   if (!request.user) {
     response.sendStatus(401);
     return;
@@ -163,12 +170,59 @@ app.post('/api/interview/:id/answer', async (request, response) => {
     response.sendStatus(404);
     return;
   }
-  if (interview.status === 'completed' || interview.responses.length === 5) {
+  if (interview.status === 'completed') {
     response.sendStatus(400);
     return;
   }
   const { question, answer } = request.body;
-  interview.responses.push({question, answer});
+  if (!question) {
+    response.sendStatus(400);
+    return;
+  }
+  const { responses } = interview;
+  const last = responses[responses.length - 1];
+  if (responses.length < 5 && (responses.length === 0 || last.status === 'completed')) {
+    responses.push({question, answer, status: 'in-progress'});
+  }
+  else if (last.status === 'in-progress') {
+    last.answer = answer;
+  }
+  try {
+    await user.save();
+    response.sendStatus(200);
+  } catch (err) {
+    console.error(err);
+    response.sendStatus(500);
+  }
+})
+
+app.patch('/api/interview/:id/answer', async (request, response) => {
+  if (!request.user) {
+    response.sendStatus(401);
+    return;
+  }
+  const user = await User.findById(request.user._id);
+  if (!user) {
+    response.sendStatus(404);
+    return;
+  }
+  const interview = user.interviews.id(request.params.id);
+  if (!interview) {
+    response.sendStatus(404);
+    return;
+  }
+  if (interview.status === 'completed') {
+    response.sendStatus(400);
+    return;
+  }
+  const { responses } = interview;
+  const last = responses[responses.length - 1];
+  if (last.status === 'completed') {
+    response.sendStatus(400);
+    return;
+  }
+  last.status = 'completed'
+
   if (interview.responses.length == 5) {
     interview.status = 'completed'
   }

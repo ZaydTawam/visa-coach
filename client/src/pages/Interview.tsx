@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { questions } from '../data/questions';
 
@@ -6,18 +6,34 @@ const Interview = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const id = location.state.id || '';
-  const savedQuestionNumber = location.state.questionNumber || 1;
-  const [questionNumber, setQuestionNumber] = useState(savedQuestionNumber);
-  const [question, setQuestion] = useState(
-    questions[0][Math.floor(Math.random() * questions[0].length)]
+  const [questionNumber, setQuestionNumber] = useState(
+    location.state.questionNumber || 1
   );
-  const [answer, setAnswer] = useState('');
+  const [question, setQuestion] = useState(
+    location.state.question ||
+      questions[0][Math.floor(Math.random() * questions[0].length)]
+  );
+  const [answer, setAnswer] = useState(location.state.answer || '');
   const [recording, setRecording] = useState(false);
+
+  useEffect(() => {
+    if (question) {
+      console.log(question, answer);
+      fetch(`http://localhost:3000/api/interview/${id}/save`, {
+        method: 'PATCH',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ question: question, answer: answer }),
+      });
+    }
+  }, [answer]);
 
   const handleClick = () => {
     if (answer) {
       fetch(`http://localhost:3000/api/interview/${id}/answer`, {
-        method: 'POST',
+        method: 'PATCH',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
