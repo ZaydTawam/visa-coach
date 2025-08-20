@@ -1,4 +1,5 @@
-import express, { request } from 'express';
+import express from 'express';
+import dotenv from 'dotenv';
 import cors from 'cors';
 import session from 'express-session';
 import passport from 'passport';
@@ -15,6 +16,7 @@ declare global {
   }
 }
 
+dotenv.config()
 mongoose
   .connect('mongodb://127.0.0.1/visa_coach')
   .then(() => console.log('Connected to Database'))
@@ -217,7 +219,7 @@ app.patch('/api/interview/:id/answer', async (request, response) => {
   }
   const { responses } = interview;
   const last = responses[responses.length - 1];
-  if (last.status === 'completed') {
+  if (last.status === 'completed' || !last.answer) {
     response.sendStatus(400);
     return;
   }

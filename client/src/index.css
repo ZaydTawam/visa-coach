@@ -96,12 +96,6 @@ nav a {
   border-left: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.form-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 .form {
   display: flex;
   flex-direction: column;
@@ -118,18 +112,10 @@ nav a {
   color: #fff;
 }
 
-.name-fields {
-  display: grid;
-  gap: 2rem;
-  grid-template-columns: 1fr 1fr;
-}
-
-/* 1. Make placeholder text 60% white */
 ::placeholder {
   color: rgba(255, 255, 255, 0.6);
 }
 
-/* For cross-browser support, also include vendor-prefixed versions: */
 ::-webkit-input-placeholder {
   color: rgba(255, 255, 255, 0.6);
 }
@@ -141,21 +127,6 @@ nav a {
 }
 ::-moz-placeholder {
   color: rgba(255, 255, 255, 0.6);
-}
-
-input {
-  width: 100%;
-  font-size: 1.5rem;
-  letter-spacing: 0.5px;
-  backdrop-filter: blur(15px);
-  padding: 1.5rem 2.5rem;
-  border-style: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.4);
-  border-left: 1px solid rgba(255, 255, 255, 0.3);
-  background-color: #ffffff1a;
-  color: #ffffff;
-  border-radius: 30px;
-  outline: none;
 }
 
 .form input,
@@ -172,84 +143,6 @@ input {
   color: #ffffff;
   border-radius: 30px;
   outline: none;
-}
-
-.select-container {
-  position: relative;
-}
-
-.select {
-  cursor: pointer;
-  width: 100%;
-  font-size: 1.5rem;
-  line-height: normal;
-  letter-spacing: 0.3px;
-  backdrop-filter: blur(15px);
-  padding: 1.5rem 2.5rem;
-  border-style: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.4);
-  border-left: 1px solid rgba(255, 255, 255, 0.3);
-  background-color: #ffffff1a;
-  border-radius: 30px;
-}
-
-.select-content {
-  position: absolute;
-  cursor: pointer;
-  font-size: 1.5rem;
-  letter-spacing: 0.3px;
-  width: 100%;
-  margin-top: 0.5rem;
-  background: rgba(15, 23, 42, 0.8);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 0.5rem;
-  z-index: 2;
-  max-height: 25rem;
-  overflow-y: auto;
-  animation: slideDown 0.2s ease;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-0.5rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.select-item {
-  padding: 0.75rem 1rem;
-  color: white;
-  cursor: pointer;
-  border-radius: 8px;
-  transition: all 0.2s ease;
-}
-
-.select-item:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.select-content::-webkit-scrollbar {
-  width: 8px;
-}
-
-.select-content::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-}
-
-.select-content::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-}
-
-.select-content::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
 }
 
 .error-message {
@@ -270,25 +163,15 @@ button {
   cursor: pointer;
 }
 
+input:-moz-autofill,
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 30px transparent inset !important;
-  -webkit-text-fill-color: #ffffff !important;
-  background-color: #ffffff1a !important;
-  backdrop-filter: blur(15px) !important;
-  transition: background-color 5000s ease-in-out 0s;
-}
-
-input:-moz-autofill {
-  background-color: #ffffff1a !important;
-  color: #ffffff !important;
-  backdrop-filter: blur(15px) !important;
-}
-
-input:autofill {
-  background-color: #ffffff1a !important;
-  color: #ffffff !important;
-  backdrop-filter: blur(15px) !important;
+  -webkit-box-shadow: 0 0 0 1000px white inset !important;
+  -webkit-text-fill-color: black !important;
+  caret-color: black; /* Makes caret visible on white */
+  background-color: white !important;
+  border-radius: 30px; /* keep your rounded style */
+  transition: background-color 5000s ease-in-out 0s; /* keeps Chrome from flashing blue */
 }

@@ -8,7 +8,6 @@ const Login = () => {
 
   useEffect(() => {
     fetch('http://localhost:3000/api/auth/status', {
-      method: 'GET',
       credentials: 'include',
     }).then((response) => {
       if (response.ok) {
@@ -45,7 +44,7 @@ const Login = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      fetch('http://localhost:3000/api/auth', {
+      fetch('http://localhost:3000/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

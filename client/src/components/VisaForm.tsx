@@ -1,9 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import validator from 'validator';
 import { countryData } from '../data/countries';
 import { universityData } from '../data/universities';
 import logo from '../assets/visacoach.svg';
-import { CaretUpDown } from '@phosphor-icons/react';
 import { Link } from 'react-router-dom';
 
 const countries = Object.keys(countryData);
@@ -27,36 +26,6 @@ const VisaForm = () => {
     country: '',
     university: '',
   });
-
-  const [countryOpen, setCountryOpen] = useState(false);
-  const [universityOpen, setUniversityOpen] = useState(false);
-  const countryRef = useRef<HTMLDivElement>(null);
-  const universityRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        countryOpen &&
-        countryRef.current &&
-        !countryRef.current.contains(event.target as Node)
-      ) {
-        setCountryOpen(false);
-      }
-
-      if (
-        universityOpen &&
-        universityRef.current &&
-        !universityRef.current.contains(event.target as Node)
-      ) {
-        setUniversityOpen(false);
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [countryOpen, universityOpen]);
 
   const validateForm = () => {
     const newErrors = {
@@ -108,7 +77,7 @@ const VisaForm = () => {
         .then((response) => response.json())
         .then((result) => {
           console.log('Success:', result);
-          fetch('http://localhost:3000/api/auth', {
+          fetch('http://localhost:3000/api/auth/login', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -168,7 +137,7 @@ const VisaForm = () => {
         <div>
           <input
             type="text"
-            id="email"
+            name="email"
             placeholder="Email"
             onChange={(e) =>
               setFormData({ ...formData, email: e.target.value })
@@ -179,7 +148,7 @@ const VisaForm = () => {
         <div>
           <input
             type="password"
-            id="password"
+            name="password"
             placeholder="Password"
             onChange={(e) =>
               setFormData({ ...formData, password: e.target.value })
@@ -189,12 +158,11 @@ const VisaForm = () => {
             <p className="error-message">{errors.password}</p>
           )}
         </div>
-        <div className="name-fields">
+        <div style={{ display: 'flex', gap: '1.5rem' }}>
           <div>
             <input
               type="text"
               name="firstName"
-              id="firstName"
               placeholder="First Name"
               onChange={(e) =>
                 setFormData({ ...formData, firstName: e.target.value })
@@ -208,7 +176,6 @@ const VisaForm = () => {
             <input
               type="text"
               name="lastName"
-              id="lastName"
               placeholder="Last Name"
               onChange={(e) =>
                 setFormData({ ...formData, lastName: e.target.value })
@@ -219,85 +186,54 @@ const VisaForm = () => {
             )}
           </div>
         </div>
-        <div className="select-container" ref={countryRef}>
-          <div className="select" onClick={() => setCountryOpen(!countryOpen)}>
-            {(formData.country && (
-              <p>
-                {formData.country}
-                <span style={{ float: 'right', color: '#FFFFFF99' }}>
-                  <CaretUpDown size={15} />
-                </span>
-              </p>
-            )) || (
-              <p style={{ color: '#FFFFFF99' }}>
-                Select Your Country
-                <span style={{ float: 'right', color: '#FFFFFF99' }}>
-                  <CaretUpDown size={15} />
-                </span>
-              </p>
-            )}
-          </div>
-          {countryOpen && (
-            <div className="select-content">
-              {countries.map((country) => (
-                <div
-                  key={country}
-                  className="select-item"
-                  onClick={() => {
-                    setFormData({ ...formData, country });
-                    setCountryOpen(false);
-                  }}
-                >
-                  {country}
-                </div>
-              ))}
-            </div>
-          )}
+        <div>
+          <select
+            name="country"
+            autoComplete="country"
+            defaultValue=""
+            style={{ color: formData.country ? '#fff' : '#ffffff99' }}
+            onChange={(e) => {
+              setFormData({ ...formData, country: e.target.value });
+            }}
+          >
+            <option value="" disabled>
+              Select Your Country
+            </option>
+            {countries.map((country) => (
+              <option key={country} value={country} style={{ color: '#000' }}>
+                {country}
+              </option>
+            ))}
+          </select>
           {errors.country && <p className="error-message">{errors.country}</p>}
         </div>
-
-        <div className="select-container" ref={universityRef}>
-          <div
-            className="select"
-            onClick={() => setUniversityOpen(!universityOpen)}
+        <div>
+          <select
+            name="university"
+            autoComplete="organization"
+            defaultValue=""
+            style={{ color: formData.university ? '#fff' : '#ffffff99' }}
+            onChange={(e) => {
+              setFormData({ ...formData, university: e.target.value });
+            }}
           >
-            {(formData.university && (
-              <p>
-                {formData.university}
-                <span style={{ float: 'right', color: '#FFFFFF99' }}>
-                  <CaretUpDown size={15} />
-                </span>
-              </p>
-            )) || (
-              <p style={{ color: '#FFFFFF99' }}>
-                Select Your University
-                <span style={{ float: 'right', color: '#FFFFFF99' }}>
-                  <CaretUpDown size={15} />
-                </span>
-              </p>
-            )}
-          </div>
-          {universityOpen && (
-            <div className="select-content">
-              {universityNames.map((university) => (
-                <div
-                  key={university}
-                  className="select-item"
-                  onClick={() => {
-                    setFormData({ ...formData, university });
-                    setUniversityOpen(false);
-                  }}
-                >
-                  {university}
-                </div>
-              ))}
-            </div>
-          )}
+            <option value="" disabled>
+              Select Your University
+            </option>
+            {universityNames.map((university) => (
+              <option
+                key={university}
+                value={university}
+                style={{ color: '#000' }}
+              >
+                {university}
+              </option>
+            ))}
+          </select>
           {errors.university && (
             <p className="error-message">{errors.university}</p>
           )}
         </div>
-
         <button type="submit">Continue</button>
       </form>
       <p style={{ marginTop: '2rem' }}>

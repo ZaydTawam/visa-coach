@@ -7,7 +7,6 @@ const Signup = () => {
 
   useEffect(() => {
     fetch('http://localhost:3000/api/auth/status', {
-      method: 'GET',
       credentials: 'include',
     }).then((response) => {
       if (response.ok) {

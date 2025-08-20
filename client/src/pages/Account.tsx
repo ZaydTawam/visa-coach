@@ -4,7 +4,6 @@ import PageIntro from '../components/PageIntro';
 const Account = () => {
   useEffect(() => {
     fetch('http://localhost:3000/api/auth/status', {
-      method: 'GET',
       credentials: 'include',
     }).then((response) => {
       if (!response.ok) {
