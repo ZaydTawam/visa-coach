@@ -1,9 +1,8 @@
 import express from 'express';
-import dotenv from 'dotenv';
 import cors from 'cors';
 import session from 'express-session';
 import passport from 'passport';
-import { hashPassword } from './helpers';
+import { analyze, hashPassword } from './helpers';
 import './user-schema'
 import mongoose from 'mongoose';
 import MongoStore from 'connect-mongo';
@@ -16,7 +15,6 @@ declare global {
   }
 }
 
-dotenv.config()
 mongoose
   .connect('mongodb://127.0.0.1/visa_coach')
   .then(() => console.log('Connected to Database'))
@@ -227,6 +225,8 @@ app.patch('/api/interview/:id/answer', async (request, response) => {
 
   if (interview.responses.length == 5) {
     interview.status = 'completed'
+    const analysis = await analyze(interview.responses)
+    interview.feedback = {...analysis, overallScore: 10}
   }
   try {
     await user.save();
