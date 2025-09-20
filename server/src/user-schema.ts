@@ -1,15 +1,15 @@
-import mongoose, { Schema, Document, Model } from 'mongoose';
+import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface Interview {
   _id?: mongoose.Types.ObjectId;
-  date: Date,
-  status: 'in-progress' | 'completed';
-  responses: {question: string, answer: string, status: 'in-progress' | 'completed'}[],
+  date: Date;
+  status: "in-progress" | "completed";
+  responses: { question: string; answer: string }[];
   feedback: {
-    strengths: string[],
-    weaknesses: string[],
-    overallScore: number
-  },
+    strengths: string[];
+    weaknesses: string[];
+    overallScore: number;
+  };
 }
 
 export interface IUser extends Document {
@@ -26,24 +26,23 @@ const interviewSchema = new Schema<Interview>({
   date: { type: Date, default: Date.now },
   status: {
     type: String,
-    enum: ['in-progress', 'completed'],
-    default: 'in-progress',
+    enum: ["in-progress", "completed"],
+    default: "in-progress",
   },
-  responses: { 
+  responses: {
     type: [
-    {
-      question: { type: String, required: true}, 
-      answer: {
-        type: String,
-        default: '',
-        required: function (this: any) {
-          return this.status === 'completed';
-        }
+      {
+        question: { type: String, required: true },
+        answer: {
+          type: String,
+          default: "",
+          required: function (this: any) {
+            return this.status === "completed";
+          },
+        },
       },
-      status: { type: String, enum: ['in-progress', 'completed'], default: 'in-progress', required: true}
-    }
-    ], 
-    required: true, 
+    ],
+    required: true,
     default: [],
   },
   feedback: {
@@ -81,12 +80,12 @@ const userSchema: Schema<IUser> = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    minlength: [8, 'Password must be at least 6 characters'],
+    minlength: [8, "Password must be at least 6 characters"],
   },
   interviews: {
     type: [interviewSchema],
-  default: []
-}
+    default: [],
+  },
 });
 
-export const User: Model<IUser> = mongoose.model('User', userSchema);
+export const User: Model<IUser> = mongoose.model("User", userSchema);
