@@ -2,13 +2,19 @@ import express from "express";
 import cors from "cors";
 import session from "express-session";
 import passport from "passport";
-import { analyze, transcribeAudio, hashPassword } from "./helpers";
+import {
+  analyze,
+  generateFollowUp,
+  transcribeAudio,
+  hashPassword,
+} from "./helpers";
 import "./user-schema";
 import mongoose from "mongoose";
 import MongoStore from "connect-mongo";
 import { IUser, User } from "./user-schema";
 import "./local-strategy";
 import multer from "multer";
+import axios from "axios";
 
 declare global {
   namespace Express {
@@ -118,6 +124,31 @@ app.get("/api/interviews", (request, response) => {
   else response.status(200).send(request.user.interviews);
 });
 
+app.get("/api/interview/:id/analysis", async (request, response) => {
+  if (!request.user) {
+    response.sendStatus(401);
+    return;
+  }
+  const user = await User.findById(request.user._id);
+  if (!user) {
+    response.sendStatus(404);
+    return;
+  }
+  const interview = user.interviews.id(request.params.id);
+  if (!interview) {
+    response.sendStatus(404);
+    return;
+  }
+  if (
+    interview.status !== "completed" ||
+    (!interview.feedback.strengths && !interview.feedback.weaknesses)
+  ) {
+    response.sendStatus(400);
+    return;
+  }
+  response.status(200).send(interview.feedback);
+});
+
 app.post("/api/interview/start", async (request, response) => {
   if (!request.user) {
     response.sendStatus(401);
@@ -198,14 +229,36 @@ app.patch(
     const answer = await transcribeAudio(audioFile);
     responses.push({ question, answer });
 
+    let followupQuestion = "";
+
+    try {
+      const uncertaintyResponse = await axios.post(
+        "http://localhost:5000/confidence",
+        {
+          text: answer,
+        }
+      );
+      const isUncertain = uncertaintyResponse.data.uncertain;
+
+      if (isUncertain) {
+        followupQuestion = await generateFollowUp(question, answer);
+      }
+    } catch (err) {
+      console.log("Error checking uncertainty:", err);
+    }
+
     if (interview.responses.length == 5) {
       interview.status = "completed";
       const analysis = await analyze(interview.responses);
-      interview.feedback = { ...analysis, overallScore: 10 };
+      interview.feedback = { ...analysis };
     }
     try {
       await user.save();
-      response.sendStatus(200);
+      if (followupQuestion) {
+        response.status(200).send({ followupQuestion });
+      } else {
+        response.sendStatus(200);
+      }
     } catch (err) {
       console.error(err);
       response.sendStatus(500);

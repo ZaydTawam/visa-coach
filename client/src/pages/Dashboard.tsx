@@ -48,24 +48,13 @@ const Dashboard = () => {
         onClick={() => {
           navigate("/start-interview");
         }}
+        className="mouse-button1"
         style={{
           marginBottom: "15rem",
-          background: "#fff",
-          borderRadius: "25px",
-          display: "inline-block",
-          padding: "8px 24px",
-          textDecoration: "none",
+          fontSize: "18px",
         }}
       >
-        <p
-          style={{
-            fontSize: "18px",
-            color: "#000",
-            lineHeight: "27px",
-          }}
-        >
-          New Interview
-        </p>
+        New Interview
       </button>
 
       <h3 style={{ marginBottom: "1.5rem" }}>Your Recent Interviews</h3>
@@ -85,7 +74,10 @@ const Dashboard = () => {
           {interviews
             .map((interview) => (
               <p
-                style={{ color: interview === selected ? "#FFF" : "#FFFFFF99" }}
+                style={{
+                  color: interview === selected ? "#FFF" : "#FFFFFF99",
+                  cursor: "pointer",
+                }}
                 onClick={() => setSelected(interview)}
                 key={interview._id}
               >

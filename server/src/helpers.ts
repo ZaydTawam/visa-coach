@@ -11,20 +11,51 @@ const client = new OpenAI({ apiKey: OPENAI_API_KEY });
 const Evaluation = z.object({
   strengths: z.array(z.string()).max(3),
   weaknesses: z.array(z.string()).max(3),
+  nextSteps: z.array(z.string()).max(3),
+  overallScore: z.number().min(0).max(10),
 });
 
 export const analyze = async (transcript: object) => {
   const response = await client.responses.parse({
-    model: "gpt-5-nano",
-    instructions: `You are an F1 visa interviewer evaluating a practice interview. 
-    You will receive a complete interview transcript with practice questions and the applicant's answers.
-    Analyze the answers only and provide strengths and weaknesses based on content accuracy, completeness, and potential red flags for visa officers.
-    Response should match the JSON format max 3 per list; empty arrays allowed if no notable strengths/weaknesses.`,
+    model: "gpt-4o-mini",
+    instructions: `
+    You are an F1 visa interviewer evaluating a practice interview. 
+    You will receive a complete interview transcript with 5 practice questions and the applicant's answers.
+    Analyze the answers only and provide indepth feedback on strengths, weaknesses, next steps, and an overall score all based on:
+     - content accuracy
+     - completeness
+     - potential red flags for visa officers.
+
+     If a specific strength or weakness references a particular question's response, format it as:
+
+    "Question: [the question text]\n
+    \n
+    Feedback: [your feedback]"
+
+    Each feedback string (strengths, weaknesses, and next steps) should be 2-3 sentences long.
+    Response should match the JSON format; max 3 items per list; empty arrays allowed if no notable strengths/weaknesses/next steps.`,
     input: JSON.stringify(transcript),
     text: { format: zodTextFormat(Evaluation, "evaluation") },
   });
   console.log(JSON.parse(response.output_text));
   return JSON.parse(response.output_text);
+};
+
+export const generateFollowUp = async (question: string, answer: string) => {
+  const response = await client.responses.parse({
+    model: "gpt-4o-mini",
+    instructions: `You are an F1 visa interviewer conducting a practice interview.
+    Based on the applicant's answer, generate a relevant follow-up question that:
+    - Probes deeper into their response
+    - Clarifies any vague points
+    - Tests their consistency and honesty
+    - Explores potential concerns a visa officer might have
+    
+    Keep the followup question concise, similar in length to the input question.
+    Return only the follow-up question as plain text, nothing else.`,
+    input: `Question: ${question}\nAnswer: ${answer}`,
+  });
+  return response.output_text;
 };
 
 export const transcribeAudio = async (

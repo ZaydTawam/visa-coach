@@ -28,28 +28,6 @@ const Interview = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [seconds, setSeconds] = useState(66);
-  const [volume, setVolume] = useState(0);
-  useEffect(() => {
-    if (!isRecording) {
-      setVolume(0);
-      return;
-    }
-    navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-      const ctx = new AudioContext();
-      const src = ctx.createMediaStreamSource(stream);
-      const analyser = ctx.createAnalyser();
-      src.connect(analyser);
-      const data = new Uint8Array(analyser.fftSize);
-      const tick = () => {
-        analyser.getByteTimeDomainData(data);
-        let sum = 0;
-        for (let i = 0; i < data.length; i++) sum += Math.abs(data[i] - 128);
-        setVolume(Math.min(100, (sum / data.length) * 2));
-        if (isRecording) requestAnimationFrame(tick);
-      };
-      tick();
-    });
-  }, [isRecording]);
 
   const { startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder(
     { audio: true }
@@ -95,9 +73,18 @@ const Interview = () => {
     return () => clearInterval(timerId);
   }, [seconds]);
 
+  useEffect(() => {
+    return () => {
+      if (isRecording) {
+        stopRecording();
+      }
+    };
+  }, [isRecording]);
+
   const handleClick = async () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
+    console.log("here");
 
     try {
       const file = await blobUrlToFile();
@@ -117,12 +104,23 @@ const Interview = () => {
         }
       );
       if (response.ok) {
+        const contentType = response.headers.get("content-type");
+        let data = null;
+
+        if (contentType && contentType.includes("application/json")) {
+          data = await response.json();
+        }
         if (questionNumber < 5) {
-          setQuestion(
-            questions[questionNumber][
-              Math.floor(Math.random() * questions[questionNumber].length)
-            ]
-          );
+          if (data && data.followupQuestion) {
+            setQuestion(data.followupQuestion);
+          } else {
+            setQuestion(
+              questions[questionNumber][
+                Math.floor(Math.random() * questions[questionNumber].length)
+              ]
+            );
+          }
+
           setQuestionNumber(questionNumber + 1);
           setSeconds(66);
           setBlobUrl(null);
@@ -131,7 +129,7 @@ const Interview = () => {
             behavior: "smooth",
           });
         } else {
-          navigate("/analysis");
+          navigate("/analysis", { state: { id } });
         }
       } else {
         console.log("err");
@@ -150,15 +148,13 @@ const Interview = () => {
       <div
         className="info-card"
         style={{
-          width: "100%",
+          width: "fit-content",
           display: "flex",
-          gap: "2rem",
           alignItems: "center",
         }}
       >
         <div
           style={{
-            flex: 1,
             display: "flex",
             flexDirection: "column",
             gap: "0.5rem",
@@ -169,30 +165,6 @@ const Interview = () => {
             00:
             {(seconds % 61).toString().padStart(2, "0")}
           </h2>
-        </div>
-        <div
-          style={{
-            flex: 4,
-          }}
-        >
-          <div
-            style={{
-              height: "10px",
-              width: "100%",
-              background: "#FFFFFF99",
-              borderRadius: "5px",
-              marginTop: "1rem",
-            }}
-          >
-            <div
-              style={{
-                height: "100%",
-                width: `${volume}%`,
-                background: "#FFF",
-                transition: "width 0.1s linear",
-              }}
-            />
-          </div>
         </div>
       </div>
       <div

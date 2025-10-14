@@ -56,22 +56,11 @@ const StartInterview = () => {
         onClick={handleClick}
         style={{
           marginTop: "6rem",
-          background: "#fff",
-          borderRadius: "25px",
-          display: "inline-block",
-          padding: "8px 24px",
-          textDecoration: "none",
+          fontSize: "18px",
+          lineHeight: "27px",
         }}
       >
-        <p
-          style={{
-            fontSize: "18px",
-            color: "#000",
-            lineHeight: "27px",
-          }}
-        >
-          Start Interview
-        </p>
+        Start Interview
       </button>
     </>
   );

@@ -8,6 +8,7 @@ export interface Interview {
   feedback: {
     strengths: string[];
     weaknesses: string[];
+    nextSteps: string[];
     overallScore: number;
   };
 }
@@ -48,6 +49,7 @@ const interviewSchema = new Schema<Interview>({
   feedback: {
     strengths: { type: [String], required: true, default: [] },
     weaknesses: { type: [String], required: true, default: [] },
+    nextSteps: { type: [String], required: true, default: [] },
     overallScore: { type: Number, required: true, default: 0 },
   },
 });
