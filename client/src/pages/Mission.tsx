@@ -1,4 +1,4 @@
-import PageIntro from '../components/PageIntro';
+import PageIntro from "../components/PageIntro";
 
 const Mission = () => {
   return (
@@ -8,56 +8,28 @@ const Mission = () => {
         width="930px"
         marginBottom="16rem"
       >
-        <span style={{ color: '#fff' }}>Global Impact</span>
+        <span style={{ color: "#fff" }}>Global Impact</span>
         <br />
         <br /> Visa Coach helps international students prepare for visa
         interviews by providing them personalized feedback using AI technology.
         <br />
         <br />
-        <span style={{ color: '#fff' }}>Equal Access</span>
+        <span style={{ color: "#fff" }}>Equal Access</span>
         <br />
         <br /> Leveling the playing field by providing high-quality preparation
         resources to students from all backgrounds.
       </PageIntro>
       <div
         style={{
-          marginBottom: '13rem',
+          marginBottom: "13rem",
         }}
-      >
-        <h2 style={{ marginBottom: '3rem' }}>Visa Rejection Rates</h2>
-        <div
-          style={{
-            display: 'flex',
-            gap: '2vw',
-          }}
-        >
-          <div className="info-card" style={{ width: '100%' }}>
-            <p>Germany</p>
-            <h2>2.45%</h2>
-          </div>
-          <div className="info-card" style={{ width: '100%' }}>
-            <p>Peru</p>
-            <h2>27.61%</h2>
-          </div>
-          <div className="info-card" style={{ width: '100%' }}>
-            <p>Africa</p>
-            <h2>61%</h2>
-          </div>
-          <div className="info-card" style={{ width: '100%' }}>
-            <p>Germany</p>
-            <h2>2.45%</h2>
-          </div>
-          <div className="info-card" style={{ width: '100%' }}>
-            <p>Germany</p>
-            <h2>2.45%</h2>
-          </div>
-        </div>
-      </div>
+      ></div>
       <div
         style={{
-          display: 'flex',
-          alignItems: 'flex-start',
-          marginBottom: '13rem',
+          display: "flex",
+          alignItems: "flex-start",
+          marginBottom: "13rem",
+          gap: "6rem",
         }}
       >
         <h2 style={{ flex: 1, lineHeight: 0.8 }}>The Problem</h2>
@@ -71,12 +43,13 @@ const Mission = () => {
       </div>
       <div
         style={{
-          display: 'flex',
-          alignItems: 'flex-start',
-          marginBottom: '13rem',
+          display: "flex",
+          alignItems: "flex-start",
+          marginBottom: "13rem",
+          gap: "6rem",
         }}
       >
-        <h2 style={{ flex: 1, lineHeight: 0.8 }}>Our Solution</h2>
+        <h2 style={{ flex: 1, lineHeight: 0.8 }}>The Solution</h2>
         <p style={{ flex: 3 }}>
           In response, we created Visa Coach, an AI-powered F1 visa interview
           preparation tool. Visa Coach simulates realistic interviews, offering
@@ -87,11 +60,12 @@ const Mission = () => {
       </div>
       <div
         style={{
-          display: 'flex',
-          alignItems: 'flex-start',
+          display: "flex",
+          alignItems: "flex-start",
+          gap: "6rem",
         }}
       >
-        <h2 style={{ flex: 1, lineHeight: 0.8 }}>Our Vision</h2>
+        <h2 style={{ flex: 1, lineHeight: 0.8 }}>The Vision</h2>
         <p style={{ flex: 3 }}>
           Our mission is to level the playing field for students worldwide. We
           believe that no dream of studying abroad should be denied because of

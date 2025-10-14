@@ -1,18 +1,18 @@
 @font-face {
-  font-family: 'Helvetica Now';
-  src: url(assets/fonts/HelveticaNowDisplay-ExtLt.woff2) format('woff2'),
-    url(assets/fonts/HelveticaNowDisplay-ExtLt.woff) format('woff');
+  font-family: "Helvetica Now";
+  src: url(assets/fonts/HelveticaNowDisplay-ExtLt.woff2) format("woff2"),
+    url(assets/fonts/HelveticaNowDisplay-ExtLt.woff) format("woff");
 }
 @font-face {
-  font-family: 'Helvetica Now Light';
-  src: url(assets/fonts/HelveticaNowDisplay-Light.woff2) format('woff2'),
-    url(assets/fonts/HelveticaNowDisplay-Light.woff) format('woff');
+  font-family: "Helvetica Now Light";
+  src: url(assets/fonts/HelveticaNowDisplay-Light.woff2) format("woff2"),
+    url(assets/fonts/HelveticaNowDisplay-Light.woff) format("woff");
 }
 
 * {
   margin: 0;
   padding: 0;
-  font-family: 'Helvetica Now', sans-serif;
+  font-family: "Helvetica Now", sans-serif;
   font-weight: normal;
   color: #ffffff;
   box-sizing: border-box;
@@ -29,7 +29,7 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-image: url('./assets/images/background.png');
+  background-image: url("./assets/images/background.png");
   background-repeat: no-repeat;
   background-position: top center;
   background-attachment: fixed;
@@ -37,7 +37,7 @@
 }
 
 body {
-  margin: 50px 199px 0 199px;
+  margin: 50px 160px 0;
   height: 100vh;
 }
 
@@ -63,7 +63,7 @@ p {
   margin: 0;
   font-size: 1.5rem;
   letter-spacing: 0.4px;
-  font-family: 'Helvetica Now Light', sans-serif;
+  font-family: "Helvetica Now Light", sans-serif;
 }
 
 .page-container {
@@ -84,9 +84,39 @@ nav a {
   color: #fff;
 }
 
-.mouse-button1:hover {
-  background-color: #c2c2c2;
+button {
+  font-family: "Helvetica Now Light", sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: 0.3px;
+  padding: 1rem 2rem;
+  letter-spacing: 0.4px;
+  background-color: #fff;
+  color: #000;
+  border: none;
+  border-radius: 3rem;
+  cursor: pointer;
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
+.mouse-button1:hover {
+  background-color: #dddddd;
+}
+
+.mouse-button2 {
+  background: linear-gradient(117.04deg, #ffffff26, #ffffff0d);
+  backdrop-filter: blur(15px);
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  border-left: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+}
+
+.mouse-button2:hover {
+  background: linear-gradient(117.04deg, #ffffff33, #ffffff14);
+}
+
 .info-card {
   padding: 3.5rem 47px;
   background: linear-gradient(117.04deg, #ffffff12, #ffffff0d);
@@ -148,19 +178,6 @@ nav a {
 .error-message {
   color: #ff4d4d;
   margin-top: 0.5rem;
-}
-
-button {
-  font-family: 'Helvetica Now Light';
-  font-size: 1.5rem;
-  letter-spacing: 0.3px;
-  padding: 1.5rem 2rem;
-  letter-spacing: 0.4px;
-  background-color: #fff;
-  color: #000;
-  border: none;
-  border-radius: 3rem;
-  cursor: pointer;
 }
 
 input:-moz-autofill,

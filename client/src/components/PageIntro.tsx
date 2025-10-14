@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode } from "react";
 
 interface Props {
   children?: ReactNode;
@@ -10,17 +10,17 @@ interface Props {
 const PageIntro = ({
   children,
   heading,
-  marginBottom = '35rem',
-  width = '800px',
+  marginBottom = "15rem",
+  width = "800px",
 }: Props) => {
   return (
     <div
-      style={{ width, marginBottom, marginTop: '390px' }}
+      style={{ width, marginBottom, marginTop: "30rem" }}
       className="main-heading"
     >
-      <h1 style={{ marginBottom: '61px' }}>{heading}</h1>
+      <h1 style={{ marginBottom: "61px" }}>{heading}</h1>
 
-      <p style={{ width: '350px', color: '#FFFFFF99' }}>{children}</p>
+      <p style={{ width: "350px", color: "#FFFFFF99" }}>{children}</p>
     </div>
   );
 };
