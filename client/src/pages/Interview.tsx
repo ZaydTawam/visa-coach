@@ -1,19 +1,19 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { questions } from "../data/questions";
-import { useReactMediaRecorder } from "react-media-recorder";
+import { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { questions } from '../data/questions';
+import { useReactMediaRecorder } from 'react-media-recorder';
 
 const Interview = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const id = location.state.id || "";
+  const id = location.state.id || '';
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/auth/status", {
-      credentials: "include",
+    fetch('http://localhost:3000/api/auth/status', {
+      credentials: 'include',
     }).then((response) => {
       if (!response.ok || !id) {
-        window.location.href = "/";
+        window.location.href = '/';
       }
     });
   }, []);
@@ -42,15 +42,15 @@ const Interview = () => {
     if (!mediaBlobUrl) return;
     const res = await fetch(mediaBlobUrl);
     const blob = await res.blob();
-    const ext = blob.type.includes("webm")
-      ? "webm"
-      : blob.type.includes("ogg")
-      ? "ogg"
-      : blob.type.includes("wav")
-      ? "wav"
-      : "bin";
+    const ext = blob.type.includes('webm')
+      ? 'webm'
+      : blob.type.includes('ogg')
+      ? 'ogg'
+      : blob.type.includes('wav')
+      ? 'wav'
+      : 'bin';
     const file = new File([blob], `recording.${ext}`, {
-      type: blob.type || "audio/webm",
+      type: blob.type || 'audio/webm',
     });
     return file;
   };
@@ -84,30 +84,27 @@ const Interview = () => {
   const handleClick = async () => {
     if (isSubmitting) return;
     setIsSubmitting(true);
-    console.log("here");
-
     try {
       const file = await blobUrlToFile();
       if (!file) {
-        console.log("No file");
         return;
       }
       const formData = new FormData();
-      formData.append("question", question);
-      formData.append("audio", file);
+      formData.append('question', question);
+      formData.append('audio', file);
       const response = await fetch(
         `http://localhost:3000/api/interview/${id}/answer`,
         {
-          method: "PATCH",
-          credentials: "include",
+          method: 'PATCH',
+          credentials: 'include',
           body: formData,
         }
       );
       if (response.ok) {
-        const contentType = response.headers.get("content-type");
+        const contentType = response.headers.get('content-type');
         let data = null;
 
-        if (contentType && contentType.includes("application/json")) {
+        if (contentType && contentType.includes('application/json')) {
           data = await response.json();
         }
         if (questionNumber < 5) {
@@ -126,13 +123,13 @@ const Interview = () => {
           setBlobUrl(null);
           window.scrollTo({
             top: 0,
-            behavior: "smooth",
+            behavior: 'smooth',
           });
         } else {
-          navigate("/analysis", { state: { id } });
+          navigate('/analysis', { state: { id } });
         }
       } else {
-        console.log("err");
+        console.log('err');
       }
     } finally {
       setIsSubmitting(false);
@@ -141,37 +138,37 @@ const Interview = () => {
 
   return (
     <>
-      <p style={{ marginTop: "20rem", color: "#ffffff99" }}>
+      <p style={{ marginTop: '20rem', color: '#ffffff99' }}>
         Question {questionNumber} of 5
       </p>
-      <h2 style={{ marginBottom: "3rem" }}>{question}</h2>
+      <h2 style={{ marginBottom: '3rem' }}>{question}</h2>
       <div
         className="info-card"
         style={{
-          width: "fit-content",
-          display: "flex",
-          alignItems: "center",
+          width: 'fit-content',
+          display: 'flex',
+          alignItems: 'center',
         }}
       >
         <div
           style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "0.5rem",
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.5rem',
           }}
         >
-          <p>{!isRecording ? "Recording in" : "Recording in progress"}</p>
+          <p>{!isRecording ? 'Recording in' : 'Recording in progress'}</p>
           <h2>
             00:
-            {(seconds % 61).toString().padStart(2, "0")}
+            {(seconds % 61).toString().padStart(2, '0')}
           </h2>
         </div>
       </div>
       <div
         style={{
-          display: "flex",
-          marginTop: "3rem",
-          justifyContent: "space-between",
+          display: 'flex',
+          marginTop: '3rem',
+          justifyContent: 'space-between',
         }}
       >
         <button
@@ -196,7 +193,7 @@ const Interview = () => {
           onClick={handleClick}
           disabled={isRecording || isSubmitting || !blobUrl}
         >
-          {isSubmitting ? "Submitting..." : "Submit Response"}
+          {isSubmitting ? 'Submitting...' : 'Submit Response'}
         </button>
       </div>
     </>

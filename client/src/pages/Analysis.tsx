@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
-import PageIntro from "../components/PageIntro";
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import PageIntro from '../components/PageIntro';
+import useAuth from '../hooks/useAuth';
 
 type Feedback = {
   strengths: string[];
@@ -10,8 +11,10 @@ type Feedback = {
 };
 
 const Analysis = () => {
+  const navigate = useNavigate();
+  const { isAuth, isLoading } = useAuth();
   const location = useLocation();
-  const id = location.state.id || "";
+  const id = location.state.id || '';
   const [feedback, setFeedback] = useState<Feedback>({
     strengths: [],
     weaknesses: [],
@@ -20,24 +23,23 @@ const Analysis = () => {
   });
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/auth/status", {
-      credentials: "include",
-    }).then((response) => {
-      if (!response.ok || !id) {
-        window.location.href = "/";
-      } else {
-        fetch(`http://localhost:3000/api/interview/${id}/analysis`, {
-          credentials: "include",
-        }).then((response) => {
-          if (!response.ok) {
-            window.location.href = "/dashboard";
-          } else {
-            response.json().then((data) => setFeedback(data));
-          }
-        });
-      }
-    });
-  }, []);
+    if (isLoading) {
+      return;
+    }
+    if (!isAuth || !id) {
+      navigate('/');
+    } else {
+      fetch(`http://localhost:3000/api/interview/${id}/analysis`, {
+        credentials: 'include',
+      }).then((response) => {
+        if (!response.ok) {
+          navigate('/dashboard');
+        } else {
+          response.json().then((data) => setFeedback(data));
+        }
+      });
+    }
+  }, [isLoading, isAuth]);
 
   return (
     <>
@@ -45,9 +47,9 @@ const Analysis = () => {
       {feedback.strengths.length > 0 && (
         <div
           style={{
-            display: "flex",
-            alignItems: "flex-start",
-            marginBottom: "13rem",
+            display: 'flex',
+            alignItems: 'flex-start',
+            marginBottom: '13rem',
           }}
         >
           <h2 style={{ flex: 1, lineHeight: 0.8 }}>Strengths</h2>
@@ -55,9 +57,9 @@ const Analysis = () => {
             {feedback.strengths.map((strength, index) => {
               return (
                 <div
-                  style={{ display: "flex", gap: "3rem", marginBottom: "6rem" }}
+                  style={{ display: 'flex', gap: '3rem', marginBottom: '6rem' }}
                 >
-                  <h3 style={{ lineHeight: 1.1, color: "#ffffff99" }}>
+                  <h3 style={{ lineHeight: 1.1, color: '#ffffff99' }}>
                     0{index + 1}
                   </h3>
                   <p>{strength}</p>
@@ -70,9 +72,9 @@ const Analysis = () => {
       {feedback.weaknesses.length > 0 && (
         <div
           style={{
-            display: "flex",
-            alignItems: "flex-start",
-            marginBottom: "13rem",
+            display: 'flex',
+            alignItems: 'flex-start',
+            marginBottom: '13rem',
           }}
         >
           <h2 style={{ flex: 1, lineHeight: 0.8 }}>Weaknesses</h2>
@@ -80,9 +82,9 @@ const Analysis = () => {
             {feedback.weaknesses.map((weakness, index) => {
               return (
                 <div
-                  style={{ display: "flex", gap: "3rem", marginBottom: "6rem" }}
+                  style={{ display: 'flex', gap: '3rem', marginBottom: '6rem' }}
                 >
-                  <h3 style={{ lineHeight: 1.1, color: "#ffffff99" }}>
+                  <h3 style={{ lineHeight: 1.1, color: '#ffffff99' }}>
                     0{index + 1}
                   </h3>
                   <p>{weakness}</p>
@@ -95,9 +97,9 @@ const Analysis = () => {
       {feedback.nextSteps.length > 0 && (
         <div
           style={{
-            display: "flex",
-            alignItems: "flex-start",
-            marginBottom: "13rem",
+            display: 'flex',
+            alignItems: 'flex-start',
+            marginBottom: '13rem',
           }}
         >
           <h2 style={{ flex: 1, lineHeight: 0.8 }}>Next Steps</h2>
@@ -105,9 +107,9 @@ const Analysis = () => {
             {feedback.nextSteps.map((nextStep, index) => {
               return (
                 <div
-                  style={{ display: "flex", gap: "3rem", marginBottom: "6rem" }}
+                  style={{ display: 'flex', gap: '3rem', marginBottom: '6rem' }}
                 >
-                  <h3 style={{ lineHeight: 1.1, color: "#ffffff99" }}>
+                  <h3 style={{ lineHeight: 1.1, color: '#ffffff99' }}>
                     0{index + 1}
                   </h3>
                   <p>{nextStep}</p>

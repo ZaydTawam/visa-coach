@@ -1,7 +1,7 @@
 import passport from 'passport';
 import { Strategy } from 'passport-local';
 import { IUser, User } from './user-schema';
-import { comparePassword } from './helpers';
+import { comparePassword } from './utils/helpers';
 
 
 passport.serializeUser((user: any, done) => {
@@ -22,9 +22,8 @@ export default passport.use(
   new Strategy({ usernameField: 'email' }, async (email, password, done) => {
     try {
       const user = await User.findOne({ email });
-      if (!user) throw new Error('User not found');
-      if (!comparePassword(password, user.password))
-        throw new Error('Invalid password');
+      if (!user) return done(null, false, { message: 'Invalid credentials' });
+      if (!comparePassword(password, user.password)) return done(null, false, { message: 'Invalid credentials' });
       done(null, user);
     } catch (err) {
       done(err);

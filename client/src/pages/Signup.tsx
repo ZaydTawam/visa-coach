@@ -1,19 +1,16 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import VisaForm from '../components/VisaForm';
+import useAuth from '../hooks/useAuth';
 
 const Signup = () => {
   const navigate = useNavigate();
-
+  const { isAuth } = useAuth();
   useEffect(() => {
-    fetch('http://localhost:3000/api/auth/status', {
-      credentials: 'include',
-    }).then((response) => {
-      if (response.ok) {
-        navigate('/');
-      }
-    });
-  }, []);
+    if (isAuth) {
+      navigate('/');
+    }
+  }, [isAuth]);
 
   return (
     <div style={{ marginTop: '16rem' }}>

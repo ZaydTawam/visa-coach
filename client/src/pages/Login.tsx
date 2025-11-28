@@ -1,62 +1,56 @@
-import { useEffect, useState } from "react";
-import validator from "validator";
-import logo from "../assets/visacoach.svg";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import validator from 'validator';
+import logo from '../assets/visacoach.svg';
+import { Link, useNavigate } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
 
 const Login = () => {
   const navigate = useNavigate();
-
+  const { isAuth } = useAuth();
   useEffect(() => {
-    fetch("http://localhost:3000/api/auth/status", {
-      credentials: "include",
-    }).then((response) => {
-      if (response.ok) {
-        navigate("/");
-      }
-    });
-  }, []);
+    if (isAuth) {
+      navigate('/');
+    }
+  }, [isAuth]);
 
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+    email: '',
+    password: '',
   });
 
   const [errors, setErrors] = useState({
-    email: "",
-    password: "",
+    email: '',
+    password: '',
   });
 
   const validateForm = () => {
     const newErrors = {
       email: validator.isEmpty(formData.email)
-        ? "Email is required"
+        ? 'Email is required'
         : !validator.isEmail(formData.email)
-        ? "Invalid email"
-        : "",
+        ? 'Invalid email'
+        : '',
       password: validator.isEmpty(formData.password)
-        ? "Password is required"
-        : "",
+        ? 'Password is required'
+        : '',
     };
     setErrors(newErrors);
-    return !(errors.email || errors.password);
+    return !(newErrors.email || newErrors.password);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      fetch("http://localhost:3000/api/auth/login", {
-        method: "POST",
+      fetch('http://localhost:3000/api/auth/login', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        credentials: "include",
+        credentials: 'include',
         body: JSON.stringify(formData),
       }).then((response) => {
         if (response.ok) {
-          console.log(1);
-          window.location.href = "/";
-        } else {
-          console.log(2);
+          window.location.href = '/';
         }
       });
     }
@@ -66,34 +60,34 @@ const Login = () => {
     <div
       className="info-card"
       style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        width: "fit-content",
-        margin: "0 auto",
-        marginTop: "16rem",
-        padding: "3.5rem",
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        width: 'fit-content',
+        margin: '0 auto',
+        marginTop: '16rem',
+        padding: '3.5rem',
       }}
     >
       <div
         style={{
-          marginBottom: "8rem",
-          display: "flex",
-          flexDirection: "column",
+          marginBottom: '8rem',
+          display: 'flex',
+          flexDirection: 'column',
           gap: 0,
-          alignItems: "center",
-          justifyContent: "center",
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
       >
         <img
           src={logo}
           style={{
-            width: "6rem",
-            marginBottom: "2rem",
+            width: '6rem',
+            marginBottom: '2rem',
           }}
         />
         <h3>Log in</h3>
-        <p style={{ color: "rgba(255, 255, 255, 0.6)" }}>
+        <p style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
           or <Link to="/signup">create an account</Link>
         </p>
       </div>
@@ -104,7 +98,7 @@ const Login = () => {
             type="text"
             id="email"
             placeholder="Email"
-            style={{ width: "330px" }}
+            style={{ width: '330px' }}
             onChange={(e) =>
               setFormData({ ...formData, email: e.target.value })
             }
@@ -128,7 +122,7 @@ const Login = () => {
         <button
           type="submit"
           className="mouse-button1"
-          style={{ padding: "1.5rem 2.5rem" }}
+          style={{ padding: '1.5rem 2.5rem' }}
         >
           Enter
         </button>
@@ -136,9 +130,9 @@ const Login = () => {
       <Link
         to="/"
         style={{
-          fontSize: "1.5rem",
-          letterSpacing: "0.4px",
-          marginTop: "2rem",
+          fontSize: '1.5rem',
+          letterSpacing: '0.4px',
+          marginTop: '2rem',
         }}
       >
         Forgot password?

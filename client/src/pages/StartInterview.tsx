@@ -1,30 +1,26 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
 
 const StartInterview = () => {
+  const { isAuth, isLoading } = useAuth();
   const navigate = useNavigate();
-
   useEffect(() => {
-    fetch("http://localhost:3000/api/auth/status", {
-      credentials: "include",
-    }).then((response) => {
-      if (!response.ok) {
-        window.location.href = "/";
-      }
-    });
-  }, []);
+    if (isLoading) return;
+    if (!isAuth) navigate('/');
+  }, [isAuth, isLoading]);
 
   const handleClick = () => {
-    fetch("http://localhost:3000/api/interview/start", {
-      method: "POST",
-      credentials: "include",
+    fetch('http://localhost:3000/api/interview/start', {
+      method: 'POST',
+      credentials: 'include',
     })
       .then((response) => {
-        if (!response.ok) throw new Error("Failed to start interview");
+        if (!response.ok) throw new Error('Failed to start interview');
         return response.text();
       })
       .then((id) => {
-        navigate("/interview", { state: { id } });
+        navigate('/interview', { state: { id } });
       })
       .catch((err) => {
         console.error(err);
@@ -33,9 +29,9 @@ const StartInterview = () => {
 
   return (
     <>
-      <div style={{ marginTop: "390px" }}>
-        <h1 style={{ marginBottom: "61px" }}>Start Interview</h1>
-        <p style={{ width: "550px", color: "#FFFFFF99" }}>
+      <div style={{ marginTop: '390px' }}>
+        <h1 style={{ marginBottom: '61px' }}>Start Interview</h1>
+        <p style={{ width: '550px', color: '#FFFFFF99' }}>
           This mock interview is designed to closely simulate a real F-1 visa
           interview. You will be asked five questions and you’ll have up to 60
           seconds to respond to each.
@@ -55,9 +51,9 @@ const StartInterview = () => {
       <button
         onClick={handleClick}
         style={{
-          marginTop: "6rem",
-          fontSize: "18px",
-          lineHeight: "27px",
+          marginTop: '6rem',
+          fontSize: '18px',
+          lineHeight: '27px',
         }}
       >
         Start Interview

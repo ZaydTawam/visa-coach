@@ -1,14 +1,16 @@
 import express from "express";
 import cors from "cors";
 import session from "express-session";
+import rateLimit from 'express-rate-limit';
 import passport from "passport";
 import {
   analyze,
   generateFollowUp,
   transcribeAudio,
   hashPassword,
-} from "./helpers";
-import "./user-schema";
+} from "./utils/helpers";
+import { registerSchema, loginSchema, interviewAnswerSchema, validateRequest} from "./utils/validation";
+const { checkSchema } = require('express-validator');
 import mongoose from "mongoose";
 import MongoStore from "connect-mongo";
 import { IUser, User } from "./user-schema";
@@ -25,11 +27,19 @@ declare global {
 mongoose
   .connect("mongodb://127.0.0.1/visa_coach")
   .then(() => console.log("Connected to Database"))
-  .catch((err) => console.log(`Error: ${err}`));
+  .catch((err) => console.error("Error:", err));
 const app = express();
 const PORT = 3000;
 
 const upload = multer({ storage: multer.memoryStorage() });
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: 'Too many authentication attempts, please try again later',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 app.use(express.json());
 app.use(
@@ -60,23 +70,32 @@ app.get("/api/auth/status", (request, response) => {
 
 app.post(
   "/api/auth/login",
+  authLimiter,
+  checkSchema(loginSchema),
+  validateRequest,
   passport.authenticate("local"),
   (request, response) => {
     response.sendStatus(200);
   }
 );
 
-app.post("/api/auth/register", async (request, response) => {
-  request.body.password = hashPassword(request.body.password);
-  const newUser = new User(request.body);
-  try {
-    const savedUser = await newUser.save();
-    response.status(201).send(savedUser);
-  } catch (err) {
-    console.log(err);
-    response.sendStatus(400);
+app.post(
+  "/api/auth/register",
+  authLimiter,
+  checkSchema(registerSchema),
+  validateRequest,
+  async (request, response) => {
+    request.body.password = hashPassword(request.body.password);
+    const newUser = new User(request.body);
+    try {
+      await newUser.save();
+      response.sendStatus(201);
+    } catch (err) {
+      console.error('Registration error:', err);
+      response.sendStatus(400);
+    }
   }
-});
+);
 
 app.post("/api/auth/logout", (request, response) => {
   if (!request.user) {
@@ -185,7 +204,7 @@ app.get("/api/interview/:id/", async (request, response) => {
     return;
   }
   if (interview.status === "completed") {
-    response.send(400);
+    response.sendStatus(400);
     return;
   }
   const { responses, id } = interview;
@@ -196,6 +215,8 @@ app.get("/api/interview/:id/", async (request, response) => {
 app.patch(
   "/api/interview/:id/answer",
   upload.single("audio"),
+  checkSchema(interviewAnswerSchema),
+  validateRequest,
   async (request, response) => {
     if (!request.user) {
       response.sendStatus(401);
@@ -233,7 +254,7 @@ app.patch(
 
     try {
       const uncertaintyResponse = await axios.post(
-        "http://localhost:5000/confidence",
+        "http://127.0.0.1:5000/confidence",
         {
           text: answer,
         }
@@ -244,7 +265,7 @@ app.patch(
         followupQuestion = await generateFollowUp(question, answer);
       }
     } catch (err) {
-      console.log("Error checking uncertainty:", err);
+      console.error("Error checking uncertainty:", err);
     }
 
     if (interview.responses.length == 5) {

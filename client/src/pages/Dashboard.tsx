@@ -1,11 +1,11 @@
-import { useNavigate } from "react-router-dom";
-import PageIntro from "../components/PageIntro";
-import { useEffect, useState } from "react";
-import Interview from "./Interview";
+import { useNavigate } from 'react-router-dom';
+import PageIntro from '../components/PageIntro';
+import { useEffect, useState } from 'react';
+import useAuth from '../hooks/useAuth';
 
 interface Interview {
   date: Date;
-  status: "in-progress" | "completed";
+  status: 'in-progress' | 'completed';
   responses: { question: string; answer: string }[];
   feedback: {
     strengths: string[];
@@ -17,66 +17,67 @@ interface Interview {
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { isAuth, isLoading } = useAuth();
   const [interviews, setInterviews] = useState<Interview[]>([]);
-  const [selected, setSelected] = useState<Interview | null>(null);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/auth/status", {
-      credentials: "include",
-    }).then((response) => {
-      if (!response.ok) {
-        window.location.href = "/";
-      } else {
-        fetch("http://localhost:3000/api/interviews", {
-          method: "GET",
-          credentials: "include",
-        })
-          .then((response) => response.json())
-          .then((data) =>
-            setInterviews(
-              data.map((item: any) => ({ ...item, date: new Date(item.date) }))
-            )
+    if (isLoading) {
+      return;
+    }
+    if (!isAuth) {
+      navigate('/');
+    } else {
+      fetch('http://localhost:3000/api/interviews', {
+        method: 'GET',
+        credentials: 'include',
+      })
+        .then((response) => response.json())
+        .then((data) =>
+          setInterviews(
+            data.map((item: any) => ({ ...item, date: new Date(item.date) }))
           )
-          .catch((error) => console.error(error));
-      }
-    });
-  }, []);
+        )
+        .catch((error) => console.error(error));
+    }
+  }, [isAuth, isLoading]);
+
+  const [selected, setSelected] = useState<Interview | null>(null);
   return (
     <>
       <PageIntro heading="Dashboard" marginBottom="1rem" />
       <button
         onClick={() => {
-          navigate("/start-interview");
+          navigate('/start-interview');
         }}
         className="mouse-button1"
         style={{
-          marginBottom: "15rem",
-          fontSize: "18px",
+          marginBottom: '15rem',
+          fontSize: '18px',
         }}
       >
         New Interview
       </button>
 
-      <h3 style={{ marginBottom: "1.5rem" }}>Your Recent Interviews</h3>
+      <h3 style={{ marginBottom: '1.5rem' }}>Your Recent Interviews</h3>
       <div
         className="info-card"
-        style={{ width: "100%", display: "flex", minHeight: "30rem" }}
+        style={{ width: '100%', display: 'flex', minHeight: '30rem' }}
       >
         <div
           style={{
-            marginRight: "8rem",
-            minWidth: "max-content",
-            display: "flex",
-            flexDirection: "column",
-            gap: "1rem",
+            marginRight: '8rem',
+            minWidth: 'max-content',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1rem',
           }}
         >
           {interviews
             .map((interview) => (
               <p
                 style={{
-                  color: interview === selected ? "#FFF" : "#FFFFFF99",
-                  cursor: "pointer",
+                  color: interview === selected ? '#FFF' : '#FFFFFF99',
+                  cursor: 'pointer',
                 }}
                 onClick={() => setSelected(interview)}
                 key={interview._id}
@@ -89,41 +90,41 @@ const Dashboard = () => {
         {!selected ? (
           <div
             style={{
-              width: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
-            <h3 style={{ color: "#FFFFFF99" }}>No Interview Selected</h3>
+            <h3 style={{ color: '#FFFFFF99' }}>No Interview Selected</h3>
           </div>
-        ) : selected.status === "in-progress" ? (
+        ) : selected.status === 'in-progress' ? (
           <div
             style={{
-              width: "100%",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
-            <h3 style={{ color: "#FFFFFF99", marginBottom: "2rem" }}>
+            <h3 style={{ color: '#FFFFFF99', marginBottom: '2rem' }}>
               Still in progress
             </h3>
             <button
               onClick={() => {
                 fetch(`http://localhost:3000/api/interview/${selected._id}`, {
-                  method: "GET",
-                  credentials: "include",
+                  method: 'GET',
+                  credentials: 'include',
                 })
                   .then((response) => {
                     if (!response.ok)
-                      throw new Error("Failed to start interview");
+                      throw new Error('Failed to start interview');
                     return response.json();
                   })
                   .then((data) => {
                     const { questionNumber, id } = data;
-                    navigate("/interview", {
+                    navigate('/interview', {
                       state: { id, questionNumber },
                     });
                   })
@@ -132,18 +133,18 @@ const Dashboard = () => {
                   });
               }}
               style={{
-                background: "#fff",
-                borderRadius: "25px",
-                display: "inline-block",
-                padding: "8px 24px",
-                textDecoration: "none",
+                background: '#fff',
+                borderRadius: '25px',
+                display: 'inline-block',
+                padding: '8px 24px',
+                textDecoration: 'none',
               }}
             >
               <p
                 style={{
-                  fontSize: "18px",
-                  color: "#000",
-                  lineHeight: "27px",
+                  fontSize: '18px',
+                  color: '#000',
+                  lineHeight: '27px',
                 }}
               >
                 Resume

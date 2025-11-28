@@ -1,16 +1,15 @@
 import { useEffect } from 'react';
 import PageIntro from '../components/PageIntro';
+import useAuth from '../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 const Account = () => {
+  const { isAuth, isLoading } = useAuth();
+  const navigate = useNavigate();
   useEffect(() => {
-    fetch('http://localhost:3000/api/auth/status', {
-      credentials: 'include',
-    }).then((response) => {
-      if (!response.ok) {
-        window.location.href = '/';
-      }
-    });
-  }, []);
+    if (isLoading) return;
+    if (!isAuth) navigate('/');
+  }, [isAuth, isLoading]);
 
   return (
     <>
